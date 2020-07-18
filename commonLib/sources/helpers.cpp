@@ -1,6 +1,4 @@
-#include <app/helpers.h>
-#include <SDL.h>
-#include <SDL_image.h>
+#include "commonLib/helpers.h"
 #include <iostream>
 
 void log_warn(std::string_view message)

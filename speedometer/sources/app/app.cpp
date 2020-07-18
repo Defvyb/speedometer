@@ -1,16 +1,17 @@
 #include "app.h"
 #include <SDL_image.h>
 #include <iostream>
-#include "helpers.h"
+#include <commonLib/helpers.h>
+
 SDLAppSpeedometer::SDLAppSpeedometer():
     m_window(NULL),
     m_renderer(NULL),
+    m_textColor({0, 0, 0}),
     m_font(NULL),
     m_screenWidth(500),
     m_screenHeight(500),
     m_angle(200)
 {
-
 }
 
 SDLAppSpeedometer::~SDLAppSpeedometer()
@@ -28,13 +29,17 @@ SDLAppSpeedometer::~SDLAppSpeedometer()
     SDL_Quit();
 }
 
-void SDLAppSpeedometer::setSpeed(double speed)
+double SDLAppSpeedometer::convertSpeedToAngle(double speed)
 {
     if(speed > 320.0) speed = 320.0;
     if(speed < 0.0) speed = 0.0;
-    m_angle = speed + 200.0;
+    return speed + 200.0;
 }
 
+void SDLAppSpeedometer::setSpeed(double speed)
+{
+    m_angle = convertSpeedToAngle(speed);
+}
 
 bool SDLAppSpeedometer::init(const std::string & screenName, int screenWidth, int screenHeight)
 {
@@ -108,8 +113,7 @@ bool SDLAppSpeedometer::loadMedia()
         return false;
     }
 
-    SDL_Color textColor = { 0, 0, 0 };
-    if( !m_textureFps.loadFromRenderedText(m_font, m_renderer, "0", textColor ) )
+    if( !m_textureFps.loadFromRenderedText(m_font, m_renderer, "0", m_textColor ) )
     {
         log_error("Failed to load arrow texture!");
         return false;
@@ -118,11 +122,8 @@ bool SDLAppSpeedometer::loadMedia()
     return true;
 }
 
-void SDLAppSpeedometer::run()
+void SDLAppSpeedometer::run(bool showFps)
 {
-    //Start up SDL and create window
-
-    //Load media
     if( !loadMedia() )
     {
         log_error( "Failed to load media!" );
@@ -131,8 +132,6 @@ void SDLAppSpeedometer::run()
     bool quit = false;
 
     SDL_Event e;
-
-    SDL_Color textColor = { 0, 0, 0 };
     double startclock = 0.0;
     double endclock = 0.0;
     double elapsed = 0.0;
@@ -140,7 +139,7 @@ void SDLAppSpeedometer::run()
     int fpsRatioCounter=0;
     while(!quit)
     {
-        startclock = static_cast<double>(SDL_GetPerformanceCounter());
+        if(showFps) startclock = static_cast<double>(SDL_GetPerformanceCounter());
         while( SDL_PollEvent( &e ) != 0 )
         {
             //User requests quit
@@ -150,49 +149,49 @@ void SDLAppSpeedometer::run()
             }
         }
 
-        //Clear screen
         SDL_RenderClear( m_renderer );
 
-        //Render texture to screen
         m_textureSpeedometer.render(0, 0,
                                     m_screenWidth,
                                     m_screenHeight,
-                                    m_renderer, NULL, 0, NULL, SDL_FLIP_NONE);
+                                    m_renderer, 0);
         m_textureArrow.render( (m_screenWidth - m_textureArrow.getWidth())/2,
                                (m_screenHeight - m_textureArrow.getHeight())/2,
                                m_textureArrow.getWidth(),
                                m_textureArrow.getHeight(),
-                               m_renderer,
-                               NULL, m_angle, NULL, SDL_FLIP_NONE );
+                               m_renderer, m_angle);
 
-        if(fpsRatioCounter++ >= FPS_SHOW_RATIO)
+        if(showFps)
         {
-            if(elapsed)
+            if(fpsRatioCounter++ >= FPS_SHOW_RATIO)
             {
-               showFPS = 1.0 / elapsed;
+                if(elapsed)
+                {
+                   showFPS = 1.0 / elapsed;
+                }
+
+                fpsRatioCounter=0;
             }
 
-            fpsRatioCounter=0;
+            if( !m_textureFps.loadFromRenderedText(m_font, m_renderer, std::to_string(static_cast<int>(floor(showFPS))), m_textColor ) )
+            {
+                log_error("Failed to load arrow texture!");
+                return;
+            }
+
+            m_textureFps.render(0, 0,
+                                m_textureFps.getWidth(),
+                                m_textureFps.getHeight(),
+                                m_renderer, 0);
         }
-        if( !m_textureFps.loadFromRenderedText(m_font, m_renderer, std::to_string(static_cast<int>(floor(showFPS))), textColor ) )
-        {
-            log_error("Failed to load arrow texture!");
-            return;
-        }
 
-        m_textureFps.render(0, 0,
-                            m_textureFps.getWidth(),
-                            m_textureFps.getHeight(),
-                            m_renderer, NULL, 0, NULL, SDL_FLIP_NONE);
-
-
-
-        //Update screen
         SDL_RenderPresent( m_renderer );
 
-        endclock = static_cast<double>(SDL_GetPerformanceCounter());
-        elapsed = (endclock - startclock) / static_cast<double>(SDL_GetPerformanceFrequency());
-
+        if(showFps)
+        {
+            endclock = static_cast<double>(SDL_GetPerformanceCounter());
+            elapsed = (endclock - startclock) / static_cast<double>(SDL_GetPerformanceFrequency());
+        }
     }
 
     return;

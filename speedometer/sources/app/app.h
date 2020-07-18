@@ -3,6 +3,7 @@
 #include <string_view>
 #include <atomic>
 #include "gui/texture.h"
+
 class SDLAppSpeedometer final
 {
 public:
@@ -10,12 +11,15 @@ public:
     ~SDLAppSpeedometer();
 
     bool init(const std::string & screenName, int screenWidth = 500, int screenHeight = 500);
-    void run();
+    void run(bool showFps = false);
     void setSpeed(double speed);
+
 private:
     bool loadMedia();
+    double convertSpeedToAngle(double speed);
     SDL_Window* m_window;
     SDL_Renderer* m_renderer;
+    SDL_Color m_textColor;
     TTF_Font* m_font;
     Texture m_textureSpeedometer;
     Texture m_textureArrow;

@@ -3,8 +3,7 @@
 #include <string_view>
 #include <iostream>
 
-template<typename T>
-void dumpError(std::string_view message, T error)
+void dumpError(std::string_view message, auto error)
 {
    std::cerr << message << " Error: "<< error << std::endl;
 }

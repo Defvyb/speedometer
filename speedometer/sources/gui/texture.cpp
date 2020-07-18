@@ -1,5 +1,6 @@
 #include "texture.h"
-#include "app/helpers.h"
+#include <commonLib/helpers.h>
+
 Texture::Texture():m_texture(NULL), m_width(0), m_height(0)
 {
 }
@@ -20,32 +21,11 @@ void Texture::free()
     }
 }
 
-void Texture::setColor( Uint8 red, Uint8 green, Uint8 blue )
-{
-    SDL_SetTextureColorMod( m_texture, red, green, blue );
-}
-
-void Texture::setBlendMode( SDL_BlendMode blending )
-{
-    SDL_SetTextureBlendMode( m_texture, blending );
-}
-
-void Texture::setAlpha( Uint8 alpha )
-{
-    SDL_SetTextureAlphaMod( m_texture, alpha );
-}
-
-void Texture::render( int x, int y, int width, int height,  SDL_Renderer* gRenderer, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip )
+void Texture::render( int x, int y, int width, int height,  SDL_Renderer* gRenderer, double angle )
 {
     SDL_Rect renderQuad = { x, y, width, height };
 
-    if( clip != NULL )
-    {
-        renderQuad.w = clip->w;
-        renderQuad.h = clip->h;
-    }
-
-    SDL_RenderCopyEx( gRenderer, m_texture, clip, &renderQuad, angle, center, flip );
+    SDL_RenderCopyEx( gRenderer, m_texture, NULL, &renderQuad, angle, NULL, SDL_FLIP_NONE );
 }
 
 int Texture::getWidth()
