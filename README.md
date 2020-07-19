@@ -25,13 +25,18 @@ Usage:
 
 generator
 
-run with socket path, example:
-./generator /tmp/socktmp.sock (mandatory parameter)
+run with socket path mandatory parameter, example:
+```
+./generator /tmp/socktmp.sock
+```
 
 speedometer
-
+args:
 -fps - show frames per seconds
 -sock_name=/tmp/socktmp.sock - socket path(default: /tmp/socktmp.sock)
+```
+./speedometer -fps -sock_name=/tmp/socktmp.sock
+```
 
 how to test speedometer accuracy:
 1) launch speedometer without args
