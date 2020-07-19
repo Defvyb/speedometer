@@ -11,5 +11,5 @@ struct ProgramOptions final{
     ProgramOptions& operator=(ProgramOptions&&) = default;
 
     bool showFps = false;
-    std::string socketAddr = "/tmp/socktmp.sock";
+    std::string socketPath = "/tmp/socktmp.sock";
 };

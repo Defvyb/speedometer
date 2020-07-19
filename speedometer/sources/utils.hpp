@@ -3,6 +3,7 @@
 #include <string>
 #include <iostream>
 #include <options.hpp>
+#include <commonLib/helpers.h>
 
 void printHelp(){
     std::cout << "Usage: -fps show fps \n";
@@ -27,7 +28,9 @@ bool getProgramOptions(int argc, char *argv[],  ProgramOptions & options) noexce
 
         findResult = arg.find("-sock_name=");
         if(findResult != std::string::npos){
-            options.socketAddr = arg.substr(arg.find_first_of("=")+1);
+            std::string sockPath = arg.substr(arg.find_first_of("=")+1);
+            if(!helpers::isCorrectSocketPath(sockPath)) return false;
+            options.socketPath = sockPath;
         }
     }
     return true;

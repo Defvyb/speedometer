@@ -30,7 +30,7 @@ bool UnixSockClient::init(){
     m_sock = ::socket(AF_UNIX, SOCK_STREAM, 0);
     if(m_sock == -1)
     {
-        dumpError("failed to open socket: ", errno);
+        helpers::dumpError("failed to open socket: ", errno);
         return false;
     }
     if(::connect(m_sock, (struct sockaddr *)&m_remote, static_cast<socklen_t>(m_len)) == -1) return false;

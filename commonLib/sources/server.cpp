@@ -12,7 +12,7 @@ UnixSockServer::~UnixSockServer(){
 
 bool UnixSockServer::init(const std::string & sockPath){
     if ((m_socketServer = ::socket(AF_UNIX, SOCK_STREAM, 0)) == -1){
-        log_error("Failed to create server socket");
+        helpers::log_error("Failed to create server socket");
         return false;
     }
 
@@ -23,12 +23,12 @@ bool UnixSockServer::init(const std::string & sockPath){
     size_t length = std::strlen(m_local.sun_path) + sizeof(m_local.sun_family);
 
     if (::bind(m_socketServer, (struct sockaddr *)&m_local, static_cast<socklen_t>(length)) == -1){
-        log_error("failed to bind server socket");
+        helpers::log_error("failed to bind server socket");
         return false;
     }
 
     if (::listen(m_socketServer, 1) == -1){
-        log_error("failed to listen server socket");
+        helpers::log_error("failed to listen server socket");
         return false;
     }
 

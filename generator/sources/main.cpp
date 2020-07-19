@@ -19,9 +19,11 @@ int main(int argc, char* argv[]){
     signal(SIGTERM, signalHandler);
 
     if(argc != 2){
-        log_warn("usage: use second arg - path to socket: generator /tmp/socktmp.sock");
+        helpers::log_warn("usage: use second arg - path to socket: generator /tmp/socktmp.sock");
         return -1;
     }
+
+    if(!helpers::isCorrectSocketPath(argv[1])) return -1;
 
     UnixSockClient client(argv[1]);
     client.init();

@@ -37,7 +37,7 @@ bool Texture::loadFromFile(SDL_Renderer* renderer, const std::string& path){
     SDL_Texture* newTexture = NULL;
     SDL_Surface* loadedSurface = IMG_Load(path.c_str());
     if(loadedSurface == NULL){
-        dumpError("Unable to load image", IMG_GetError());
+        helpers::dumpError("Unable to load image", IMG_GetError());
         return false;
     }
 
@@ -45,7 +45,7 @@ bool Texture::loadFromFile(SDL_Renderer* renderer, const std::string& path){
 
     newTexture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
     if(newTexture == NULL){
-        dumpError("Unable to create texture", SDL_GetError());
+        helpers::dumpError("Unable to create texture", SDL_GetError());
     }
     else{
         m_width = loadedSurface->w;
@@ -64,13 +64,13 @@ bool Texture::loadFromRenderedText(TTF_Font *font, SDL_Renderer* renderer, const
 
     SDL_Surface* textSurface = TTF_RenderText_Solid(font, textureText.c_str(), textColor);
     if(textSurface == NULL){
-        dumpError("Unable to render text surface!", TTF_GetError());
+        helpers::dumpError("Unable to render text surface!", TTF_GetError());
         return false;
     }
 
     m_texture = SDL_CreateTextureFromSurface(renderer, textSurface);
     if(m_texture == NULL){
-        dumpError("Unable to create texture from rendered text!", SDL_GetError());
+        helpers::dumpError("Unable to create texture from rendered text!", SDL_GetError());
     }
     else{
         m_width = textSurface->w;

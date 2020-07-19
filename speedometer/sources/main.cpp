@@ -34,7 +34,7 @@ int main(int argc, char* argv[]){
     std::thread appThread(&SDLAppSpeedometer::run, &app, options.showFps, std::ref(quit));
 
     UnixSockServer server;
-    server.init(options.socketAddr);
+    server.init(options.socketPath);
 
     std::thread speedThread(
                 [&app, &quit, &server](){
@@ -45,7 +45,7 @@ int main(int argc, char* argv[]){
                         app.setSpeed(std::stod(str));
                     }
                     catch(const std::exception & e){
-                        log_error(e.what());
+                        helpers::log_error(e.what());
                     }
                 });
             }

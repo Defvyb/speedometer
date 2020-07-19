@@ -34,24 +34,24 @@ bool SDLAppSpeedometer::init(const std::string & screenName, int screenWidth, in
     m_screenHeight = screenHeight;
 
     if(SDL_Init(SDL_INIT_VIDEO) < 0){
-        dumpError("SDL could not initialize!", SDL_GetError());
+        helpers::dumpError("SDL could not initialize!", SDL_GetError());
         return false;
     }
 
     if(!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1")){
-        log_warn("Linear texture filtering not enabled!");
+        helpers::log_warn("Linear texture filtering not enabled!");
     }
 
     //Create window
     m_window = SDL_CreateWindow(screenName.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, m_screenWidth, m_screenHeight, SDL_WINDOW_SHOWN);
     if(NULL == m_window){
-        dumpError("Window could not be created!", SDL_GetError());
+        helpers::dumpError("Window could not be created!", SDL_GetError());
         return false;
     }
 
     m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
     if(m_renderer == NULL){
-        dumpError("Renderer could not be created!", SDL_GetError());
+        helpers::dumpError("Renderer could not be created!", SDL_GetError());
         return false;
     }
 
@@ -60,12 +60,12 @@ bool SDLAppSpeedometer::init(const std::string & screenName, int screenWidth, in
     //Initialize PNG loading
     int imgFlags = IMG_INIT_PNG;
     if(!(IMG_Init(imgFlags) & imgFlags)){
-        dumpError("SDL_image could not initialize!", IMG_GetError());
+        helpers::dumpError("SDL_image could not initialize!", IMG_GetError());
         return false;
     }
 
     if(TTF_Init() == -1){
-        dumpError("SDL_ttf could not initialize!", TTF_GetError());
+        helpers::dumpError("SDL_ttf could not initialize!", TTF_GetError());
         return false;
     }
 
@@ -77,22 +77,22 @@ bool SDLAppSpeedometer::loadMedia()
 
     m_font = TTF_OpenFont("sdf.ttf", 20);
     if(m_font == NULL){
-        dumpError("Failed to load lazy font!", TTF_GetError());
+        helpers::dumpError("Failed to load lazy font!", TTF_GetError());
         return false;
     }
 
     if(!m_textureSpeedometer.loadFromFile(m_renderer, "speedometer.jpg")){
-        log_error("Failed to load speedometer texture!");
+        helpers::log_error("Failed to load speedometer texture!");
         return false;
     }
 
     if(!m_textureArrow.loadFromFile(m_renderer, "arrow.png")){
-        log_error("Failed to load arrow texture!");
+        helpers::log_error("Failed to load arrow texture!");
         return false;
     }
 
     if(!m_textureFps.loadFromRenderedText(m_font, m_renderer, "0", m_textColor)){
-        log_error("Failed to load arrow texture!");
+        helpers::log_error("Failed to load arrow texture!");
         return false;
     }
 
@@ -114,7 +114,7 @@ bool SDLAppSpeedometer::drawFps(bool showFps, double elapsed){
                                               m_renderer,
                                               std::to_string(static_cast<int>(floor(fpsToShow))),
                                               m_textColor)){
-            log_error("Failed to load arrow texture!");
+            helpers::log_error("Failed to load arrow texture!");
             return false;
         }
 
@@ -128,7 +128,7 @@ bool SDLAppSpeedometer::drawFps(bool showFps, double elapsed){
 
 void SDLAppSpeedometer::run(bool showFps, std::atomic<bool> & quit){
     if(!loadMedia()){
-        log_error("Failed to load media!");
+        helpers::log_error("Failed to load media!");
         return;
     }
 

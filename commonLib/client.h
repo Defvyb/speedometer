@@ -15,8 +15,9 @@ public:
 
     bool init();
     bool send(std::string_view msg);
-    void close();
 private:
+    void close();
+
     int m_sock = -1;
     sockaddr_un m_remote;
     size_t m_len;

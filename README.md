@@ -4,6 +4,7 @@
 Speedometer
 
 requires sdl2 library (apt install libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev), cmake 3.8+ (apt install cmake)
+gcc with C++17 support
 
 build:
 mkdir build_local
@@ -20,3 +21,10 @@ run with socket path, example:
 speedometer
 -fps - show frames per seconds
 -sock_name=/tmp/socktmp.sock - socket path(default: /tmp/socktmp.sock)
+
+how to test speedometer accuracy:
+1) launch speedometer without args
+2) run nc -U /tmp/socktmp.sock
+3) enter speed value between 0-320
+
+![Alt text](https://github.com/Defvyb/speedometer/blob/master/example.png)
