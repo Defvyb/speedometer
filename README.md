@@ -1,6 +1,8 @@
-Arrival test task
+[![Build status](https://ci.appveyor.com/api/projects/status/xxcuo3ulvi5lk5qg?svg=true)](https://ci.appveyor.com/project/Defvyb/speedometer)
 
-requires sdl2 library (apt install libsdl2-dev), cmake 3.8+ (apt install cmake)
+Speedometer
+
+requires sdl2 library (apt install libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev), cmake 3.8+ (apt install cmake)
 
 build:
 mkdir build_local
