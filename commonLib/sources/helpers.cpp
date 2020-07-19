@@ -19,7 +19,7 @@ bool helpers::isCorrectSocketPath(std::string_view sockPath)
     }
 
     if(std::strlen(sockPath.data()) > (sizeof(sockaddr_un::sun_path)-1)){
-        helpers::log_error("path to socket arg is too big, consider path size < 107" + std::to_string((sizeof(sockaddr_un::sun_path)-1)));
+        helpers::log_error("path to socket arg is too big, consider path size < 107" + std::to_string(sizeof(sockaddr_un::sun_path)-1));
         return false;
     }
 
