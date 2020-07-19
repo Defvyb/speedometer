@@ -23,4 +23,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
             CXX_STANDARD 17
             )
 
-set(CMAKE_CXX_FLAGS "-Ofast")
+set(CMAKE_CXX_FLAGS "-O0")

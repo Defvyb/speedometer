@@ -1,12 +1,15 @@
 #pragma once
 #include <string>
 
-struct ProgramOptions final
-{
-    ProgramOptions():
-        showFps(false),
-        socketAddr("/tmp/socktmp.sock") {}
+struct ProgramOptions final{
+    ProgramOptions() = default;
+    ~ProgramOptions() = default;
 
-    bool showFps;
-    std::string socketAddr;
+    ProgramOptions(ProgramOptions &) = default;
+    ProgramOptions(ProgramOptions &&) = default;
+    ProgramOptions& operator=(ProgramOptions&) = default;
+    ProgramOptions& operator=(ProgramOptions&&) = default;
+
+    bool showFps = false;
+    std::string socketAddr = "/tmp/socktmp.sock";
 };

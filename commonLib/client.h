@@ -3,18 +3,23 @@
 #include <string>
 #include <sys/un.h>
 
-class UnixSockClient final
-{
+class UnixSockClient final{
 public:
-    UnixSockClient(std::string_view sockPath);
+    explicit UnixSockClient(std::string_view sockPath);
     ~UnixSockClient();
+
+    UnixSockClient(UnixSockClient &) = delete;
+    UnixSockClient(UnixSockClient &&) = delete;
+    UnixSockClient& operator=(UnixSockClient&) = delete;
+    UnixSockClient& operator=(UnixSockClient&&) = delete;
+
     bool init();
     bool send(std::string_view msg);
     void close();
 private:
-    int m_sock;
+    int m_sock = -1;
     sockaddr_un m_remote;
-    int m_len;
+    size_t m_len;
 };
 
 
