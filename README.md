@@ -1,4 +1,5 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/xxcuo3ulvi5lk5qg?svg=true)](https://ci.appveyor.com/project/Defvyb/speedometer)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=arrival_speedometer&metric=alert_status)](https://sonarcloud.io/dashboard?id=arrival_speedometer)
 
 Speedometer
 
