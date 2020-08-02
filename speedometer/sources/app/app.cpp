@@ -1,8 +1,9 @@
 #include "app.h"
 #include <SDL_image.h>
 #include <iostream>
+#include <iomanip>
 #include <commonLib/helpers.h>
-
+#include <sstream>
 
 SDLAppSpeedometer::~SDLAppSpeedometer(){
     //Destroy window
@@ -20,13 +21,19 @@ SDLAppSpeedometer::~SDLAppSpeedometer(){
 }
 
 double SDLAppSpeedometer::convertSpeedToAngle(double speed) const{
-    if(speed > 320.0) speed = 320.0;
+    if(speed > 320.0)
+    {
+        speed = 320.0;
+    }
     if(speed < 0.0) speed = 0.0;
     return speed + 200.0;
 }
 
 void SDLAppSpeedometer::setSpeed(double speed){
     m_angle = convertSpeedToAngle(speed);
+}
+void SDLAppSpeedometer::setOdoKm(double odo){
+    m_odoKm = odo;
 }
 
 bool SDLAppSpeedometer::init(const std::string & screenName, int screenWidth, int screenHeight){
@@ -91,11 +98,6 @@ bool SDLAppSpeedometer::loadMedia()
         return false;
     }
 
-    if(!m_textureFps.loadFromRenderedText(m_font, m_renderer, "0", m_textColor)){
-        helpers::log_error("Failed to load arrow texture!");
-        return false;
-    }
-
     return true;
 }
 
@@ -113,8 +115,8 @@ bool SDLAppSpeedometer::drawFps(bool showFps, double elapsed){
         if(!m_textureFps.loadFromRenderedText(m_font,
                                               m_renderer,
                                               std::to_string(static_cast<int>(floor(fpsToShow))),
-                                              m_textColor)){
-            helpers::log_error("Failed to load arrow texture!");
+                                              m_blackTextColor)){
+            helpers::log_error("Failed to load fps texture!");
             return false;
         }
 
@@ -125,6 +127,27 @@ bool SDLAppSpeedometer::drawFps(bool showFps, double elapsed){
     }
     return true;
 }
+
+bool SDLAppSpeedometer::drawOdo(){
+
+    std::stringstream odoStream;
+    odoStream <<  std::setfill('0') << std::setw(6) << static_cast<int>(floor(m_odoKm));
+    if(!m_textureOdo.loadFromRenderedText(m_font,
+                                          m_renderer,
+                                          odoStream.str(),
+                                          m_whiteTextColor)){
+        helpers::log_error("Failed to load odo texture!");
+        return false;
+    }
+
+    m_textureOdo.render(195, 400,
+                        m_textureOdo.getWidth(),
+                        m_textureOdo.getHeight(),
+                        m_renderer, 0);
+
+    return true;
+}
+
 
 void SDLAppSpeedometer::run(bool showFps, std::atomic<bool> & quit){
     if(!loadMedia()){
@@ -151,6 +174,8 @@ void SDLAppSpeedometer::run(bool showFps, std::atomic<bool> & quit){
                                     m_screenWidth,
                                     m_screenHeight,
                                     m_renderer, 0);
+        if(!drawOdo()) return;
+
         m_textureArrow.render((m_screenWidth - m_textureArrow.getWidth())/2,
                               (m_screenHeight - m_textureArrow.getHeight())/2,
                               m_textureArrow.getWidth(),
@@ -158,6 +183,8 @@ void SDLAppSpeedometer::run(bool showFps, std::atomic<bool> & quit){
                               m_renderer, m_angle);
 
         if(!drawFps(showFps, elapsed)) return;
+
+
 
         SDL_RenderPresent(m_renderer);
 

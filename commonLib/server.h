@@ -19,15 +19,18 @@ public:
 
     bool init(const std::string & sockPath);
     void step(auto func){
+            std::string message;
             char str[100];
-            int recvCount = ::recv(m_socketConection, str, 100, 0);
-            if(recvCount == 0){
-                ::close(m_socketConection);
-                m_socketConection = -1;
-                return;
+            while (message.find("\n") == std::string::npos) {
+                int recvCount = ::recv(m_socketConection, str, 100, 0);
+                if(recvCount == 0){
+                    ::close(m_socketConection);
+                    m_socketConection = -1;
+                    return;
+                }
+                str[recvCount] = 0;
+                message.append(str);
             }
-            str[recvCount] = 0;
-            std::string message(str);
             func(message);
     }
 

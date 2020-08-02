@@ -8,6 +8,7 @@
 #include "utils.hpp"
 
 #include "app/app.h"
+#include "quantities/quantities_processor.h"
 #include <commonLib/server.h>
 #include <commonLib/helpers.h>
 
@@ -36,25 +37,42 @@ int main(int argc, char* argv[]){
     UnixSockServer server;
     server.init(options.socketPath);
 
-    std::thread speedThread(
-                [&app, &quit, &server](){
+    QuantitiesProcessor qProc;
+
+    std::thread serverThread(
+                [&quit, &server, &qProc](){
         while(!quit){
             if(server.accepted()){
-                server.step([&app](const std::string & str){
+                server.step([&qProc](const std::string & str){
                     try{
-                        app.setSpeed(std::stod(str));
+                        qProc.setExternalSpeed(std::stod(str));
                     }
                     catch(const std::exception & e){
                         helpers::log_error(e.what());
                     }
                 });
             }
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
     });
 
-    speedThread.detach();
+    std::thread processorThread(
+                [&app, &quit, &qProc](){
+                while(!quit){
+                    qProc.processStep();
+                    app.setSpeed(qProc.getCurrentSpeed());
+                    app.setOdoKm(qProc.getOdoKm());
+                    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+                }
+    }
+    );
+
+    processorThread.detach();
+    serverThread.detach();
     appThread.join();
-    if(speedThread.joinable()) speedThread.join();
+    if(processorThread.joinable()) processorThread.join();
+    if(serverThread.joinable()) serverThread.join();
+
 
     return 0;
 }

@@ -38,8 +38,11 @@ bool UnixSockClient::init(){
     return true;
 }
 
-bool UnixSockClient::send(std::string_view msg){
-    if(m_sock > 0 && (::send(m_sock, msg.data(), std::strlen(msg.data()), MSG_NOSIGNAL) != -1))
+bool UnixSockClient::send(const std::string && msg){
+
+    std::string data = std::move(msg);
+    data+="\n";
+    if(m_sock > 0 && (::send(m_sock, data.data(), data.size(), MSG_NOSIGNAL) != -1))
     {
         return true;
     }

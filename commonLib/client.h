@@ -14,7 +14,7 @@ public:
     UnixSockClient& operator=(UnixSockClient&&) = delete;
 
     bool init();
-    bool send(std::string_view msg);
+    bool send(const std::string && msg);
 private:
     void close();
 

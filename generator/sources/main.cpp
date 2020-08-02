@@ -31,7 +31,7 @@ int main(int argc, char* argv[]){
     double i=0.0;
     while(!quit){
         i++;
-        client.send(std::to_string(fabs(sin(i/600.0)+sin((i+20.0)/134.0))*150.0));
+        client.send(std::to_string( (fabs(sin(i/600.0)+sin((i+20.0)/134.0))*150.0) + (std::fmod(i,2.0) == 0.0 ? 5.0: -5.0)) );
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
     return 0;
