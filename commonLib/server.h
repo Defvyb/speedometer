@@ -20,9 +20,9 @@ public:
     bool init(const std::string & sockPath);
     void step(auto func){
             std::string message;
-            char str[100];
-            while (message.find("\n") == std::string::npos) {
-                int recvCount = ::recv(m_socketConection, str, 100, 0);
+            char str[2]= {0};
+            while (str[0] != '\n') {
+                int recvCount = ::recv(m_socketConection, str, 1, 0);
                 if(recvCount == 0){
                     ::close(m_socketConection);
                     m_socketConection = -1;
